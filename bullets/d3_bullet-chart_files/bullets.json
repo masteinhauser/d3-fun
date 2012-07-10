@@ -1,0 +1,7 @@
+[
+  {"title":"Mapping","subtitle":"hits","ranges":[50,225,500],"measures":[220,270],"markers":[250]},
+  {"title":"Geoceode","subtitle":"hits","ranges":[20,25,30],"measures":[21,23],"markers":[26]},
+  {"title":"API","subtitle":"hits","ranges":[350,500,600],"measures":[100,320],"markers":[550]},
+  {"title":"Authentication","subtitle":"hits","ranges":[1400,2000,2500],"measures":[1000,1650],"markers":[2100]},
+  {"title":"Satisfaction","subtitle":"out of 5","ranges":[3.5,4.25,5],"measures":[3.2,4.7],"markers":[4.4]}
+]
