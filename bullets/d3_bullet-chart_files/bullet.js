@@ -6,8 +6,16 @@ var chart = bulletChart()
     .width(width - margin.right - margin.left)
     .height(height - margin.top - margin.bottom);
 
-d3.json("d3_bullet-chart_files/bullets.json", function(data) {
+var zip = '54701'
+getWOEID(zip, function(woeid){
+   getWeather(woeid, function(weather){
+      weatherToBullets(weather, function(bullets){
+         buildChart(bullets);
+      })
+   })
+})
 
+function buildChart(data){
   var vis = d3.select("#chart").selectAll("svg")
       .data(data)
     .enter().append("svg")
@@ -35,7 +43,8 @@ d3.json("d3_bullet-chart_files/bullets.json", function(data) {
   window.transition = function() {
     vis.datum(randomize).call(chart);
   };
-});
+}
+
 
 function randomize(d) {
   if (!d.randomizer) d.randomizer = randomizer(d);
