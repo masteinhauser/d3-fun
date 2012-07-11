@@ -61,7 +61,6 @@
 		<script type="text/javascript">
          //data
          var lanes = ["Time", "Dennis Skinner", "Freddie Denny - Courier", "Joe Nevels", "John Evans - Courier", "John Hodge", "Kayla Griggs - Courier", "Michelle Jesse - Courier", "Ron Evans", "Shawn Taylor", "Thomas Hooks - Courier", "Troy Frost", "Wille Chinn"]
-         var laneLength = lanes.length
          var items = [
                      {"lane": 0, "id": "7:00a", "start": 0, "end": 59},
                      {"lane": 0, "id": "8:00a", "start": 60, "end": 119},
@@ -75,13 +74,13 @@
                      {"lane": 0, "id": "4:00p", "start": 540, "end": 599},
                      {"lane": 0, "id": "5:00p", "start": 600, "end": 659},
                      {"lane": 0, "id": "6:00p", "start": 660, "end": 719},
-                     {"lane": 1, "id": "Idle", "start": 60, "end": 78, "type": "idle"},
+                     {"lane": 1, "id": "Idle ", "start": 60, "end": 78, "type": "idle"},
                      {"lane": 1, "id": "NEW 8 AM", "start": 79, "end": 270},
                      {"lane": 1, "id": "Manifest #29222", "start": 337, "end": 415},
                      {"lane": 1, "id": "Manifest #29237", "start": 426, "end": 454},
                      {"lane": 1, "id": "Manifest #29246", "start": 472, "end": 500},
                      {"lane": 1, "id": "Manifest #29256", "start": 521, "end": 534},
-                     {"lane": 2, "id": "Idle", "start": 131, "end": 136, "type": "idle"},
+                     {"lane": 2, "id": "Idle  ", "start": 131, "end": 136, "type": "idle"},
                      {"lane": 2, "id": "Manifest #29164", "start": 136, "end": 153},
                      {"lane": 2, "id": "Manifest #29169", "start": 162, "end": 176},
                      {"lane": 2, "id": "Manifest #29174", "start": 196, "end": 227},
@@ -94,7 +93,7 @@
                      {"lane": 2, "id": "Manifest #29245", "start": 463, "end": 479},
                      {"lane": 2, "id": "Manifest #29249", "start": 480, "end": 486},
                      {"lane": 2, "id": "Manifest #29255", "start": 525, "end": 557},
-                     {"lane": 3, "id": "Idle", "start": 31, "end": 90, "type": "idle"},
+                     {"lane": 3, "id": "Idle   ", "start": 31, "end": 90, "type": "idle"},
                      {"lane": 3, "id": "Manifest #29149", "start": 91, "end": 106},
                      {"lane": 3, "id": "Manifest #29156", "start": 111, "end": 124},
                      {"lane": 3, "id": "Manifest #29162", "start": 137, "end": 174},
@@ -104,14 +103,14 @@
                      {"lane": 3, "id": "55 Monday 2:00 PM (Jul 02)", "start": 422, "end": 517}
                      ]
          var timeBegin = 0
-         var timeEnd = 720
+         var timeEnd = 719
 		</script>
 		<script type="text/javascript">
-		var m = [20, 15, 15, 200], //top right bottom left
-			w = (timeEnd * 2) - m[1] - m[3],
-			h = (lanes.length * 50)+(lanes.length) - m[0] - m[2],
-			miniHeight = lanes.length * 8 + 50,
-			mainHeight = h - miniHeight - 50;
+		var m = [20, 15, 15, 200] //top left bottom right
+		var w = (timeEnd * 2) - m[3]
+		var h = (lanes.length * 50)+(lanes.length) - m[0] - m[2]
+		var miniHeight = lanes.length * 8 + 50
+		var mainHeight = h - miniHeight - 50
 
 		//scales
 		var x = d3.scale.linear()
@@ -120,10 +119,10 @@
 		var x1 = d3.scale.linear()
 				.range([0, w]);
 		var y1 = d3.scale.linear()
-				.domain([0, laneLength])
+				.domain([0, lanes.length])
 				.range([0, mainHeight]);
 		var y2 = d3.scale.linear()
-				.domain([0, laneLength])
+				.domain([0, lanes.length])
 				.range([0, miniHeight]);
 
 		var chart = d3.select("body")
@@ -154,7 +153,7 @@
 		main.append("g").selectAll(".laneLines")
 			.data(items)
 			.enter().append("line")
-			.attr("x1", m[1])
+			.attr("x1", 0)
 			.attr("y1", function(d) {return y1(d.lane);})
 			.attr("x2", w)
 			.attr("y2", function(d) {return y1(d.lane);})
@@ -174,7 +173,7 @@
 		mini.append("g").selectAll(".laneLines")
 			.data(items)
 			.enter().append("line")
-			.attr("x1", m[1])
+			.attr("x1", 0)
 			.attr("y1", function(d) {return y2(d.lane);})
 			.attr("x2", w)
 			.attr("y2", function(d) {return y2(d.lane);})
@@ -197,18 +196,8 @@
 		mini.append("g").selectAll("miniItems")
 			.data(items)
 			.enter().append("rect")
-         .attr("class", function(d) {
-               var cssclass
-               console.log(d)
-               console.log(d.type)
-               if(d.type == "idle"){
-                  cssclass = "miniIdle"
-               }else{
-                  cssclass = "miniItem" + d.lane
-               }
-               return cssclass
-               })
-			.attr("x", function(d) {return x(d.start);})
+         .attr("class", findCSSClass)
+         .attr("x", function(d) {return x(d.start);})
 			.attr("y", function(d) {return y2(d.lane + .5) - 5;})
 			.attr("width", function(d) {return x(d.end - d.start);})
 			.attr("height", 9);
@@ -256,7 +245,7 @@
                   .attr("width", function(d) {return x1(d.end) - x1(d.start);});
 			
 			rects.enter().append("rect")
-      			   .attr("class", function(d) {return "miniItem" + d.lane;})
+      			   .attr("class", findCSSClass)
      				   .attr("x", function(d) {return x1(d.start);})
       			   .attr("y", function(d) {return 3+y1(d.lane);})
    				   .attr("width", function(d) {return x1(d.end) - x1(d.start);})
@@ -277,7 +266,18 @@
 
 			labels.exit().remove();
 		}
-		
+
+      function findCSSClass(d) {
+         var cssclass
+
+         if(d.type == "idle"){
+            cssclass = "miniIdle"
+         }else{
+            cssclass = "miniItem" + d.lane
+         }
+         return cssclass
+      }
+
 		</script>
 	</body>
 </html>
