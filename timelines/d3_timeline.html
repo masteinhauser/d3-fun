@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-		<title>Chronological Diagram of Asia</title>
+		<title>Driver Activity Visualization (Demo)</title>
 		<script type="text/javascript" src="http://mbostock.github.com/d3/d3.v2.js"></script>
 		<style type="text/css">
 		.chart {
@@ -17,6 +17,10 @@
 			font: 12px sans-serif;	
 		}
 
+		.miniIdle {
+			fill: yellow;
+			stroke-width: 6;	
+		}
 		.miniItem0 {
 			fill: darksalmon;
 			stroke-width: 6;	
@@ -34,6 +38,12 @@
 			stroke-width: 6;	
 		}
 
+		.miniItem3 {
+			fill: lightblue;
+			fill-opacity: .7;
+			stroke-width: 6;	
+      }
+
 		.brush .extent {
 			stroke: gray;
 			fill: dodgerblue;
@@ -42,43 +52,65 @@
 		</style>
 	</head>
    <body>
-      <h3>Click a text box to view overlaps</h3>
+      <h3>Driver Activity Visualization (Demo)</h3>
+      <p>
+         Click/drag bottom box to view overlaps and details
+         <br>
+         July 2nd, 2012 for FMP Columbia
+      </p>
 		<script type="text/javascript">
-		//data
-		var lanes = ["Chinese","Japanese","Korean"],
-			laneLength = lanes.length,
-			items = [{"lane": 0, "id": "Qin", "start": 5, "end": 205},
-					{"lane": 0, "id": "Jin", "start": 265, "end": 420},
-					{"lane": 0, "id": "Sui", "start": 580, "end": 615},
-					{"lane": 0, "id": "Tang", "start": 620, "end": 900},
-					{"lane": 0, "id": "Song", "start": 960, "end": 1265},
-					{"lane": 0, "id": "Yuan", "start": 1270, "end": 1365},
-					{"lane": 0, "id": "Ming", "start": 1370, "end": 1640},
-					{"lane": 0, "id": "Qing", "start": 1645, "end": 1910},
-					{"lane": 1, "id": "Yamato", "start": 300, "end": 530},
-					{"lane": 1, "id": "Asuka", "start": 550, "end": 700},
-					{"lane": 1, "id": "Nara", "start": 710, "end": 790},
-					{"lane": 1, "id": "Heian", "start": 800, "end": 1180},
-					{"lane": 1, "id": "Kamakura", "start": 1190, "end": 1330},
-					{"lane": 1, "id": "Muromachi", "start": 1340, "end": 1560},
-					{"lane": 1, "id": "Edo", "start": 1610, "end": 1860},
-					{"lane": 1, "id": "Meiji", "start": 1870, "end": 1900},
-					{"lane": 1, "id": "Taisho", "start": 1910, "end": 1920},
-					{"lane": 1, "id": "Showa", "start": 1925, "end": 1985},
-					{"lane": 1, "id": "Heisei", "start": 1990, "end": 1995},
-					{"lane": 2, "id": "Three Kingdoms", "start": 10, "end": 670},
-					{"lane": 2, "id": "North and South States", "start": 690, "end": 900},
-					{"lane": 2, "id": "Goryeo", "start": 920, "end": 1380},
-					{"lane": 2, "id": "Joseon", "start": 1390, "end": 1890},
-					{"lane": 2, "id": "Korean Empire", "start": 1900, "end": 1945}]
-			timeBegin = 0,
-			timeEnd = 2000;
+         //data
+         var lanes = ["Time", "Dennis Skinner", "Freddie Denny - Courier", "Joe Nevels", "John Evans - Courier", "John Hodge", "Kayla Griggs - Courier", "Michelle Jesse - Courier", "Ron Evans", "Shawn Taylor", "Thomas Hooks - Courier", "Troy Frost", "Wille Chinn"]
+         var laneLength = lanes.length
+         var items = [
+                     {"lane": 0, "id": "7:00a", "start": 0, "end": 59},
+                     {"lane": 0, "id": "8:00a", "start": 60, "end": 119},
+                     {"lane": 0, "id": "9:00a", "start": 120, "end": 179},
+                     {"lane": 0, "id": "10:00a", "start": 180, "end": 239},
+                     {"lane": 0, "id": "11:00a", "start": 240, "end": 299},
+                     {"lane": 0, "id": "12:00p", "start": 300, "end": 359},
+                     {"lane": 0, "id": "1:00p", "start": 360, "end": 419},
+                     {"lane": 0, "id": "2:00p", "start": 420, "end": 479},
+                     {"lane": 0, "id": "3:00p", "start": 480, "end": 539},
+                     {"lane": 0, "id": "4:00p", "start": 540, "end": 599},
+                     {"lane": 0, "id": "5:00p", "start": 600, "end": 659},
+                     {"lane": 0, "id": "6:00p", "start": 660, "end": 719},
+                     {"lane": 1, "id": "Idle", "start": 60, "end": 78, "type": "idle"},
+                     {"lane": 1, "id": "NEW 8 AM", "start": 79, "end": 270},
+                     {"lane": 1, "id": "Manifest #29222", "start": 337, "end": 415},
+                     {"lane": 1, "id": "Manifest #29237", "start": 426, "end": 454},
+                     {"lane": 1, "id": "Manifest #29246", "start": 472, "end": 500},
+                     {"lane": 1, "id": "Manifest #29256", "start": 521, "end": 534},
+                     {"lane": 2, "id": "Idle", "start": 131, "end": 136, "type": "idle"},
+                     {"lane": 2, "id": "Manifest #29164", "start": 136, "end": 153},
+                     {"lane": 2, "id": "Manifest #29169", "start": 162, "end": 176},
+                     {"lane": 2, "id": "Manifest #29174", "start": 196, "end": 227},
+                     {"lane": 2, "id": "Manifest #29206", "start": 241, "end": 270},
+                     {"lane": 2, "id": "Manifest #29213", "start": 271, "end": 301},
+                     {"lane": 2, "id": "Manifest #29216", "start": 310, "end": 331},
+                     {"lane": 2, "id": "Manifest #29223", "start": 338, "end": 353},
+                     {"lane": 2, "id": "Manifest #29226", "start": 368, "end": 391},
+                     {"lane": 2, "id": "Manifest #29231", "start": 395, "end": 408},
+                     {"lane": 2, "id": "Manifest #29245", "start": 463, "end": 479},
+                     {"lane": 2, "id": "Manifest #29249", "start": 480, "end": 486},
+                     {"lane": 2, "id": "Manifest #29255", "start": 525, "end": 557},
+                     {"lane": 3, "id": "Idle", "start": 31, "end": 90, "type": "idle"},
+                     {"lane": 3, "id": "Manifest #29149", "start": 91, "end": 106},
+                     {"lane": 3, "id": "Manifest #29156", "start": 111, "end": 124},
+                     {"lane": 3, "id": "Manifest #29162", "start": 137, "end": 174},
+                     {"lane": 3, "id": "Manifest #29172", "start": 185, "end": 213},
+                     {"lane": 3, "id": "Manifest #29199", "start": 227, "end": 261},
+                     {"lane": 3, "id": "Manifest #29210", "start": 270, "end": 298},
+                     {"lane": 3, "id": "55 Monday 2:00 PM (Jul 02)", "start": 422, "end": 517}
+                     ]
+         var timeBegin = 0
+         var timeEnd = 720
 		</script>
 		<script type="text/javascript">
-		var m = [20, 15, 15, 120], //top right bottom left
-			w = 960 - m[1] - m[3],
-			h = 500 - m[0] - m[2],
-			miniHeight = laneLength * 12 + 50,
+		var m = [20, 15, 15, 200], //top right bottom left
+			w = (timeEnd * 2) - m[1] - m[3],
+			h = (lanes.length * 50)+(lanes.length) - m[0] - m[2],
+			miniHeight = lanes.length * 8 + 50,
 			mainHeight = h - miniHeight - 50;
 
 		//scales
@@ -165,20 +197,31 @@
 		mini.append("g").selectAll("miniItems")
 			.data(items)
 			.enter().append("rect")
-			.attr("class", function(d) {return "miniItem" + d.lane;})
+         .attr("class", function(d) {
+               var cssclass
+               console.log(d)
+               console.log(d.type)
+               if(d.type == "idle"){
+                  cssclass = "miniIdle"
+               }else{
+                  cssclass = "miniItem" + d.lane
+               }
+               return cssclass
+               })
 			.attr("x", function(d) {return x(d.start);})
 			.attr("y", function(d) {return y2(d.lane + .5) - 5;})
 			.attr("width", function(d) {return x(d.end - d.start);})
-			.attr("height", 10);
+			.attr("height", 9);
 
+// DISABLED: Do not display labels on mini view, only rectangles
 		//mini labels
-		mini.append("g").selectAll(".miniLabels")
-			.data(items)
-			.enter().append("text")
-			.text(function(d) {return d.id;})
-			.attr("x", function(d) {return x(d.start);})
-			.attr("y", function(d) {return y2(d.lane + .5);})
-			.attr("dy", ".5ex");
+//		mini.append("g").selectAll(".miniLabels")
+//			.data(items)
+//			.enter().append("text")
+//			.text(function(d) {return d.id;})
+//			.attr("x", function(d) {return x(d.start);})
+//			.attr("y", function(d) {return y2(d.lane + .5);})
+//			.attr("dy", ".5ex");
 
 		//brush
 		var brush = d3.svg.brush()
@@ -200,39 +243,39 @@
 				maxExtent = brush.extent()[1],
 				visItems = items.filter(function(d) {return d.start < maxExtent && d.end > minExtent;});
 
-			mini.select(".brush")
-				.call(brush.extent([minExtent, maxExtent]));
+// DISABLED: Was improperly resetting the brush extants.
+//			mini.select(".brush")
+//				.call(brush.extent([minExtent, maxExtent]));
 
 			x1.domain([minExtent, maxExtent]);
 
 			//update main item rects
 			rects = itemRects.selectAll("rect")
-			        .data(visItems, function(d) { return d.id; })
-				.attr("x", function(d) {return x1(d.start);})
-				.attr("width", function(d) {return x1(d.end) - x1(d.start);});
+                  .data(visItems, function(d) { return d.id; })
+				      .attr("x", function(d) {return x1(d.start);})
+                  .attr("width", function(d) {return x1(d.end) - x1(d.start);});
 			
 			rects.enter().append("rect")
-				.attr("class", function(d) {return "miniItem" + d.lane;})
-				.attr("x", function(d) {return x1(d.start);})
-				.attr("y", function(d) {return y1(d.lane) + 10;})
-				.attr("width", function(d) {return x1(d.end) - x1(d.start);})
-				.attr("height", function(d) {return .8 * y1(1);});
+      			   .attr("class", function(d) {return "miniItem" + d.lane;})
+     				   .attr("x", function(d) {return x1(d.start);})
+      			   .attr("y", function(d) {return 3+y1(d.lane);})
+   				   .attr("width", function(d) {return x1(d.end) - x1(d.start);})
+      				.attr("height", function(d) {return .8 * y1(1);});
 
 			rects.exit().remove();
 
 			//update the item labels
 			labels = itemRects.selectAll("text")
-				.data(visItems, function (d) { return d.id; })
-				.attr("x", function(d) {return x1(Math.max(d.start, minExtent) + 2);});
+      				.data(visItems, function (d) { return d.id; })
+      				.attr("x", function(d) {return x1(Math.max(d.start, minExtent) + 1);});
 
 			labels.enter().append("text")
-				.text(function(d) {return d.id;})
-				.attr("x", function(d) {return x1(Math.max(d.start, minExtent));})
-				.attr("y", function(d) {return y1(d.lane + .5);})
-				.attr("text-anchor", "start");
+      				.text(function(d) {return d.id;})
+      				.attr("x", function(d) {return x1(Math.max(d.start, minExtent));})
+      				.attr("y", function(d) {return y1(d.lane + .5)+3;})
+      				.attr("text-anchor", "start");
 
 			labels.exit().remove();
-
 		}
 		
 		</script>
