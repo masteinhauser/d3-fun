@@ -261,7 +261,7 @@
 			labels.enter().append("text")
       				.text(function(d) {return d.id;})
       				.attr("x", function(d) {return x1(Math.max(d.start, minExtent));})
-      				.attr("y", function(d) {return y1(d.lane + .5)+3;})
+      				.attr("y", function(d) {return y1(d.lane + .5)+4;})
       				.attr("text-anchor", "start");
 
 			labels.exit().remove();
